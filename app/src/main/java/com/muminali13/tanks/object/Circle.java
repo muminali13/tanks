@@ -22,4 +22,7 @@ public abstract class Circle extends GameObject {
         canvas.drawCircle((float) positionX, (float) positionY, (float) radius, paint);
     }
 
+    public static boolean isColliding(Circle c1, Circle c2) {
+        return (distanceBetweenObjects(c1, c2) < c1.radius + c2.radius);
+    }
 }

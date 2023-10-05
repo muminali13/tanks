@@ -10,8 +10,13 @@ import android.view.SurfaceView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
+import com.muminali13.tanks.object.Circle;
 import com.muminali13.tanks.object.Enemy;
 import com.muminali13.tanks.object.Player;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
@@ -19,7 +24,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     private final Player player;
     private final Joystick joystick;
-    private Enemy enemy;
+
+    private List<Enemy> enemies = new ArrayList<>();
+//    private Enemy enemy;
 
 
     public Game(Context context) {
@@ -33,7 +40,6 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         joystick = new Joystick(200, 800, 80, 40);
 
         player = new Player(ContextCompat.getColor(getContext(), R.color.player), joystick, 500, 500, 30);
-        enemy = new Enemy(getContext(), player, 30, 500, 700);
     }
 
     @Override
@@ -55,8 +61,22 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     public void update() {
         joystick.update();
         player.update();
-        enemy.update();
 
+        if (Enemy.readyToSpawn()) {
+            enemies.add(new Enemy(getContext(), player));
+        }
+
+
+        for (Enemy e : enemies) {
+            e.update();
+        }
+
+        Iterator<Enemy> enemyIterator = enemies.iterator();
+        while (enemyIterator.hasNext()) {
+            if (Circle.isColliding(enemyIterator.next(), player)) {
+                enemyIterator.remove();
+            }
+        }
     }
 
     public void draw(Canvas canvas) {
@@ -64,7 +84,10 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         player.draw(canvas);
         joystick.draw(canvas);
-        enemy.draw(canvas);
+
+        for (Enemy e : enemies) {
+            e.draw(canvas);
+        }
 
 
         drawUPS(canvas);

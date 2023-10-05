@@ -6,7 +6,7 @@ import com.muminali13.tanks.Joystick;
 
 public class Player extends Circle {
 
-    private final double SPEED_PIXELS_PER_SECOND = 200;
+    private final double SPEED_PIXELS_PER_SECOND = 400;
     private final double MAX_SPEED = SPEED_PIXELS_PER_SECOND / GameLoop.MAX_UPS;
 
     private Joystick joystick;
