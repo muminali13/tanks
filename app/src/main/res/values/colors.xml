@@ -8,4 +8,5 @@
     <color name="spell">#FF9D0A</color>
     <color name="health_bar">#00FF00</color>
     <color name="health_bar_border">#AFAFAF</color>
+    <color name="red">#E42A1C</color>
 </resources>

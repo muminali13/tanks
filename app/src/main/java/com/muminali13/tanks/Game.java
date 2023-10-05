@@ -1,33 +1,42 @@
 package com.muminali13.tanks;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 
 import com.muminali13.tanks.object.Circle;
 import com.muminali13.tanks.object.Enemy;
 import com.muminali13.tanks.object.Player;
 import com.muminali13.tanks.object.Spell;
+import com.muminali13.tanks.panel.DebugOverlay;
+import com.muminali13.tanks.panel.GameOver;
+import com.muminali13.tanks.panel.Joystick;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+
 public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameLoop gameLoop;
 
+    private GameDisplay gameDisplay;
     private final Player player;
     private final Joystick joystick;
 
-    private List<Enemy> enemies = new ArrayList<>();
-    private List<Spell> spells = new ArrayList<>();
+    private List<Enemy> enemies;
+    private List<Spell> spells;
+
+    private GameOver gameOver;
+    private DebugOverlay debug;
 
     private int joystickPointerID = 0;
     private int spellsToCast = 0;
@@ -38,23 +47,34 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         SurfaceHolder surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
 
-        setFocusable(true);
         gameLoop = new GameLoop(this, surfaceHolder);
+        debug = new DebugOverlay(getContext(), gameLoop);
+
+        gameOver = new GameOver(getContext());
         joystick = new Joystick(200, 800, 80, 40);
 
         player = new Player(getContext(), joystick, 500, 500, 30);
+        enemies = new ArrayList<>();
+        spells = new ArrayList<>();
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        gameDisplay = new GameDisplay(player, displayMetrics.widthPixels, displayMetrics.heightPixels);
+
+        setFocusable(true);
     }
 
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
+        if (gameLoop.getState().equals(Thread.State.TERMINATED)) {
+            gameLoop = new GameLoop(this, surfaceHolder);
+        }
+        gameLoop.startLoop();
 
     }
 
     @Override
-    public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-
-        gameLoop.startLoop();
-    }
+    public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {}
 
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
@@ -62,6 +82,11 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void update() {
+
+        if (player.getHealth() <= 0) {
+            return;
+        }
+
         joystick.update();
         player.update();
 
@@ -104,24 +129,29 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
                 }
             }
         }
+
+        gameDisplay.update();
     }
 
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
-        player.draw(canvas);
-        joystick.draw(canvas);
+        if (player.getHealth() <= 0) {
+            gameOver.draw(canvas);
+            return;
+        }
+        player.draw(canvas, gameDisplay);
 
         for (Enemy e : enemies) {
-            e.draw(canvas);
+            e.draw(canvas, gameDisplay);
         }
 
         for (Spell s : spells) {
-            s.draw(canvas);
+            s.draw(canvas, gameDisplay);
         }
 
-        drawUPS(canvas);
-        drawFPS(canvas);
+        joystick.draw(canvas);
+        debug.draw(canvas);
     }
 
     @Override
@@ -162,24 +192,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     }
 
-    private void drawUPS(Canvas canvas) {
-        String averageUPS = Double.toString(gameLoop.getAverageUPS());
-
-        Paint paint = new Paint();
-        int color = ContextCompat.getColor(getContext(), R.color.primary);
-        paint.setColor(color);
-        paint.setTextSize(20);
-        canvas.drawText("UPS: " + averageUPS, 20, 25, paint);
-    }
-
-    private void drawFPS(Canvas canvas) {
-        String averageFPS = Double.toString(gameLoop.getAverageFPS());
-
-        Paint paint = new Paint();
-        int color = ContextCompat.getColor(getContext(), R.color.primary);
-        paint.setColor(color);
-        paint.setTextSize(20);
-
-        canvas.drawText("FPS: " + averageFPS, 20, 80, paint);
+    public void pause() {
+        gameLoop.stopLoop();
     }
 }

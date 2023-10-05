@@ -2,6 +2,8 @@ package com.muminali13.tanks.object;
 
 import android.graphics.Canvas;
 
+import com.muminali13.tanks.GameDisplay;
+
 public abstract class GameObject {
 
     protected double positionX;
@@ -20,7 +22,7 @@ public abstract class GameObject {
 
     public abstract void update();
 
-    public abstract void draw(Canvas canvas);
+    public abstract void draw(Canvas canvas, GameDisplay gameDisplay);
 
     public double getPositionX() {
         return positionX;

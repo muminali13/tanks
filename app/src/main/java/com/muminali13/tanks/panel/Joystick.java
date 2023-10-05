@@ -1,4 +1,4 @@
-package com.muminali13.tanks;
+package com.muminali13.tanks.panel;
 
 import android.graphics.Canvas;
 import android.graphics.Color;

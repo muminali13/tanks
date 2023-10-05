@@ -1,4 +1,4 @@
-package com.muminali13.tanks.object;
+package com.muminali13.tanks.panel;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -6,7 +6,9 @@ import android.graphics.Paint;
 
 import androidx.core.content.ContextCompat;
 
+import com.muminali13.tanks.GameDisplay;
 import com.muminali13.tanks.R;
+import com.muminali13.tanks.object.Player;
 
 public class HealthBar {
 
@@ -31,7 +33,7 @@ public class HealthBar {
         healthPaint.setColor(ContextCompat.getColor(context, R.color.health_bar));
     }
 
-    public void draw(Canvas canvas) {
+    public void draw(Canvas canvas, GameDisplay gameDisplay) {
 
         float x = (float) player.getPositionX();
         float y = (float) player.getPositionY();
@@ -44,8 +46,20 @@ public class HealthBar {
         float b = y - distanceAbove;
         float t = b - height;
 
-        canvas.drawRect(l - margin, t - margin, r + margin, b + margin, borderPaint);
-        canvas.drawRect(l, t, r, b, healthPaint);
+        canvas.drawRect(
+                (float) gameDisplay.gameToDisplayCoordinateX(l - margin),
+                (float) gameDisplay.gameToDisplayCoordinateY(t - margin),
+                (float) gameDisplay.gameToDisplayCoordinateX(r + margin),
+                (float) gameDisplay.gameToDisplayCoordinateY(b + margin),
+                borderPaint
+        );
+        canvas.drawRect(
+                (float) gameDisplay.gameToDisplayCoordinateX(l),
+                (float) gameDisplay.gameToDisplayCoordinateY(t),
+                (float) gameDisplay.gameToDisplayCoordinateX(r),
+                (float) gameDisplay.gameToDisplayCoordinateY(b),
+                healthPaint
+        );
         canvas.drawText(":" + player.getHealth(), 100, 100, borderPaint);
     }
 }

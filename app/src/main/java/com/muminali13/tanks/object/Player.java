@@ -5,9 +5,11 @@ import android.graphics.Canvas;
 
 import androidx.core.content.ContextCompat;
 
+import com.muminali13.tanks.GameDisplay;
 import com.muminali13.tanks.GameLoop;
-import com.muminali13.tanks.Joystick;
+import com.muminali13.tanks.panel.Joystick;
 import com.muminali13.tanks.R;
+import com.muminali13.tanks.panel.HealthBar;
 
 
 public class Player extends Circle {
@@ -43,9 +45,9 @@ public class Player extends Circle {
         }
     }
 
-    public void draw(Canvas canvas) {
-        super.draw(canvas);
-        healthBar.draw(canvas);
+    public void draw(Canvas canvas, GameDisplay gameDisplay) {
+        super.draw(canvas, gameDisplay);
+        healthBar.draw(canvas, gameDisplay);
     }
 
     public int getHealth() {

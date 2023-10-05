@@ -3,6 +3,8 @@ package com.muminali13.tanks.object;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import com.muminali13.tanks.GameDisplay;
+
 
 public abstract class Circle extends GameObject {
 
@@ -18,8 +20,13 @@ public abstract class Circle extends GameObject {
         paint.setColor(color);
     }
 
-    public void draw(Canvas canvas) {
-        canvas.drawCircle((float) positionX, (float) positionY, (float) radius, paint);
+    public void draw(Canvas canvas, GameDisplay gameDisplay) {
+        canvas.drawCircle(
+                (float) gameDisplay.gameToDisplayCoordinateX(positionX),
+                (float) gameDisplay.gameToDisplayCoordinateY(positionY),
+                (float) radius,
+                paint
+        );
     }
 
     public static boolean isColliding(Circle c1, Circle c2) {
