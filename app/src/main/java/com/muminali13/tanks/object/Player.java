@@ -1,20 +1,32 @@
 package com.muminali13.tanks.object;
 
+import android.content.Context;
+import android.graphics.Canvas;
+
+import androidx.core.content.ContextCompat;
+
 import com.muminali13.tanks.GameLoop;
 import com.muminali13.tanks.Joystick;
+import com.muminali13.tanks.R;
 
 
 public class Player extends Circle {
+
+    public static final int MAX_HEALTH = 10;
+    private int health;
 
     private final double SPEED_PIXELS_PER_SECOND = 400;
     private final double MAX_SPEED = SPEED_PIXELS_PER_SECOND / GameLoop.MAX_UPS;
 
     private Joystick joystick;
+    private HealthBar healthBar;
 
-    public Player(int color, Joystick joystick, double positionX, double positionY, double radius) {
-        super(color, radius, positionX, positionY);
+    public Player(Context context, Joystick joystick, double positionX, double positionY, double radius) {
+        super(ContextCompat.getColor(context, R.color.player), radius, positionX, positionY);
 
         this.joystick = joystick;
+        this.healthBar = new HealthBar(context,this);
+        this.health = MAX_HEALTH;
     }
 
     public void update() {
@@ -31,11 +43,25 @@ public class Player extends Circle {
         }
     }
 
+    public void draw(Canvas canvas) {
+        super.draw(canvas);
+        healthBar.draw(canvas);
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
     public void setPositionX(double positionX) {
         this.positionX = positionX;
     }
 
     public void setPositionY(double positionY) {
         this.positionY = positionY;
+    }
+
+    public void setHealth(int health) {
+        if (health >= 0)
+            this.health = health;
     }
 }

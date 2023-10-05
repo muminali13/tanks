@@ -42,7 +42,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
         gameLoop = new GameLoop(this, surfaceHolder);
         joystick = new Joystick(200, 800, 80, 40);
 
-        player = new Player(ContextCompat.getColor(getContext(), R.color.player), joystick, 500, 500, 30);
+        player = new Player(getContext(), joystick, 500, 500, 30);
     }
 
     @Override
@@ -88,6 +88,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
             Circle enemy = enemyIterator.next();
             if (Circle.isColliding(enemy, player)) {
                 enemyIterator.remove();
+                player.setHealth(player.getHealth() - 1);
                 continue;
             }
 

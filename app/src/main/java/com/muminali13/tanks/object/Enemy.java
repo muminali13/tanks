@@ -11,7 +11,7 @@ import com.muminali13.tanks.R;
 
 public class Enemy extends Circle {
 
-    private static final int SPAWNS_PER_MINUTE = 6;
+    private static final int SPAWNS_PER_MINUTE = 20;
     private static final int UPDATES_PER_SPAWN = (int) GameLoop.MAX_UPS * 60 / SPAWNS_PER_MINUTE;
     private static int updatesUntilNextSpawn = 0;
 
