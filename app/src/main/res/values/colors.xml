@@ -5,4 +5,5 @@
     <color name="primary">#437A69</color>
     <color name="player">#CC3EFF</color>
     <color name="enemy">#FF3E3E</color>
+    <color name="spell">#FF9D0A</color>
 </resources>

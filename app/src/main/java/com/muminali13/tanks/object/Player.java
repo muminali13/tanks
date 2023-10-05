@@ -18,11 +18,17 @@ public class Player extends Circle {
     }
 
     public void update() {
+
         velocityX = joystick.getActuatorX() * MAX_SPEED;
         velocityY = joystick.getActuatorY() * MAX_SPEED;
 
         positionX += velocityX;
         positionY += velocityY;
+
+        if (velocityX != 0 && velocityY != 0) {
+            directionX = joystick.getActuatorX();
+            directionY = joystick.getActuatorY();
+        }
     }
 
     public void setPositionX(double positionX) {
