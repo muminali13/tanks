@@ -10,12 +10,16 @@ import android.view.SurfaceView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
+import com.muminali13.tanks.object.Enemy;
+import com.muminali13.tanks.object.Player;
+
 public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameLoop gameLoop;
 
     private final Player player;
     private final Joystick joystick;
+    private Enemy enemy;
 
 
     public Game(Context context) {
@@ -26,9 +30,10 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         setFocusable(true);
         gameLoop = new GameLoop(this, surfaceHolder);
-
-        player = new Player(getContext(), 500, 500, 30);
         joystick = new Joystick(200, 800, 80, 40);
+
+        player = new Player(ContextCompat.getColor(getContext(), R.color.player), joystick, 500, 500, 30);
+        enemy = new Enemy(getContext(), player, 30, 500, 700);
     }
 
     @Override
@@ -49,7 +54,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     public void update() {
         joystick.update();
-        player.update(joystick);
+        player.update();
+        enemy.update();
 
     }
 
@@ -58,6 +64,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         player.draw(canvas);
         joystick.draw(canvas);
+        enemy.draw(canvas);
 
 
         drawUPS(canvas);
