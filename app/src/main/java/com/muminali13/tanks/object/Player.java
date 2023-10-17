@@ -7,6 +7,8 @@ import androidx.core.content.ContextCompat;
 
 import com.muminali13.tanks.GameDisplay;
 import com.muminali13.tanks.GameLoop;
+import com.muminali13.tanks.graphics.Animator;
+import com.muminali13.tanks.graphics.Sprite;
 import com.muminali13.tanks.panel.Joystick;
 import com.muminali13.tanks.R;
 import com.muminali13.tanks.panel.HealthBar;
@@ -22,13 +24,19 @@ public class Player extends Circle {
 
     private Joystick joystick;
     private HealthBar healthBar;
+    private Animator animator;
 
-    public Player(Context context, Joystick joystick, double positionX, double positionY, double radius) {
+    private PlayerState playerState;
+
+    public Player(Context context, Joystick joystick, double positionX, double positionY, double radius, Animator animator) {
         super(ContextCompat.getColor(context, R.color.player), radius, positionX, positionY);
 
         this.joystick = joystick;
         this.healthBar = new HealthBar(context,this);
         this.health = MAX_HEALTH;
+
+        this.animator = animator;
+        this.playerState = new PlayerState(this);
     }
 
     public void update() {
@@ -43,10 +51,13 @@ public class Player extends Circle {
             directionX = joystick.getActuatorX();
             directionY = joystick.getActuatorY();
         }
+
+        playerState.update();
     }
 
     public void draw(Canvas canvas, GameDisplay gameDisplay) {
-        super.draw(canvas, gameDisplay);
+//        super.draw(canvas, gameDisplay);
+        animator.draw(canvas, this, gameDisplay);
         healthBar.draw(canvas, gameDisplay);
     }
 
@@ -65,5 +76,9 @@ public class Player extends Circle {
     public void setHealth(int health) {
         if (health >= 0)
             this.health = health;
+    }
+
+    public PlayerState getPlayerState() {
+        return playerState;
     }
 }

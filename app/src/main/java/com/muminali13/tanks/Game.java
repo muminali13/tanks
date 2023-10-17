@@ -4,13 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
+import com.muminali13.tanks.graphics.Animator;
+import com.muminali13.tanks.graphics.SpriteSheet;
 import com.muminali13.tanks.object.Circle;
 import com.muminali13.tanks.object.Enemy;
 import com.muminali13.tanks.object.Player;
@@ -41,6 +42,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
     private int joystickPointerID = 0;
     private int spellsToCast = 0;
 
+    private SpriteSheet spriteSheet;
+
     public Game(Context context) {
         super(context);
 
@@ -49,11 +52,14 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         gameLoop = new GameLoop(this, surfaceHolder);
         debug = new DebugOverlay(getContext(), gameLoop);
+        spriteSheet = new SpriteSheet(getContext(), 64, 64);
 
         gameOver = new GameOver(getContext());
         joystick = new Joystick(200, 800, 80, 40);
 
-        player = new Player(getContext(), joystick, 500, 500, 30);
+        Animator animator = new Animator(spriteSheet.getPlayerSpriteArray());
+        player = new Player(getContext(), joystick, 500, 500, 30, animator);
+
         enemies = new ArrayList<>();
         spells = new ArrayList<>();
 
